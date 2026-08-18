@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Navbar</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+
+/* ============================================================
+   SHOPSY NAVBAR — tokens
+   ============================================================ */
+:root{
+  --sy-ink:#141212;
+  --sy-ink-soft:#221f1d;
+  --sy-bone:#F7F3EC;
+  --sy-wine:#8C2F39;
+  --sy-wine-light:#B24552;
+  --sy-gold:#C9A961;
+  --sy-line: rgba(247,243,236,.14);
+}
+
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  background:var(--sy-bone);
+  font-family:'Poppins',sans-serif;
+}
+
+/* ============================================================
+   TOPBAR
+   ============================================================ */
+.sy-topbar{
+  background-color: #ff9800;
+  color: white;
+  overflow:hidden;
+}
+.sy-topbar-inner{
+  max-width:1200px;
+  margin:0 auto;
+  padding:.5rem 1.5rem;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:.6rem;
+  font-size:.72rem;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  font-weight:500;
+  text-align:center;
+}
+
+/* ============================================================
+   NAVBAR SHELL
+   ============================================================ */
+.sy-nav{
+  padding:1.1rem 0;
+  border-bottom:1px solid var(--sy-line);
+  transition:padding .35s ease, box-shadow .35s ease;
+  position:sticky;
+  top:0;
+  z-index:100;
+  background-color: #ff9800;
+}
+.sy-nav.sy-scrolled{
+  padding:.55rem 0;
+  box-shadow:0 12px 30px -18px rgba(0,0,0,.6);
+}
+.sy-nav-inner{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:1.5rem;
+}
+
+/* ============================================================
+   BRAND — tag-shaped monogram
+   ============================================================ */
+.sy-brand{
+  display:flex;
+  align-items:center;
+  gap:.75rem;
+  text-decoration:none;
+}
+.sy-tag{
+  --size:38px;
+  width:var(--size);
+  height:var(--size);
+  flex:0 0 auto;
+  background: white;
+  transform:rotate(45deg);
+  border-radius:6px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+  transition:transform .4s ease;
+}
+.sy-brand:hover .sy-tag{ transform:rotate(0deg); }
+.sy-tag::after{
+  content:"S";
+  transform:rotate(-45deg);
+  color: #ff9800;
+  font-family:'Playfair Display',serif;
+  font-weight:700;
+  font-size:1.05rem;
+}
+.sy-tag-hole{
+  position:absolute;
+  top:5px;
+  left:5px;
+  width:5px;
+  height:5px;
+  border-radius:50%;
+  background: #ff9800;
+}
+.sy-brandtext{ display:flex; flex-direction:column; line-height:1; }
+.sy-bname{
+  font-family:'Playfair Display',serif;
+  font-weight:700;
+  font-size:1.5rem;
+  letter-spacing:.01em;
+  color: white;
+}
+.sy-bname span{ color: white; }
+.sy-bsub{
+  margin-top:.3rem;
+  font-size:.62rem;
+  letter-spacing:.22em;
+  text-transform:uppercase;
+  color:white;
+}
+
+/* ============================================================
+   LINKS + sliding indicator
+   ============================================================ */
+.sy-links{
+  position:relative;
+  gap:.35rem;
+}
+.sy-links .nav-link{
+  color: white;
+  font-size:.78rem;
+  font-weight:500;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  padding:.6rem .9rem !important;
+  transition:color .25s ease;
+}
+.sy-links .nav-link:hover,
+.sy-links .nav-link.active{
+  color: white;
+}
+.sy-indicator{
+  position:absolute;
+  bottom:0;
+  height:2px;
+  background: white;
+  border-radius:2px;
+  transition:left .3s cubic-bezier(.65,0,.35,1), width .3s cubic-bezier(.65,0,.35,1), opacity .2s ease;
+  opacity:0;
+  pointer-events:none;
+}
+.sy-links:hover .sy-indicator{ opacity:1; }
+
+/* ============================================================
+   ACTIONS — search / account / bag
+   ============================================================ */
+.sy-actions{ gap:.35rem; position:relative; }
+
+.sy-icon-btn{
+  width:38px;
+  height:38px;
+  border-radius:50%;
+  border:1px solid var(--sy-line);
+  background:transparent;
+  color: white;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  font-size:.9rem;
+  cursor:pointer;
+  transition:.25s ease;
+  text-decoration:none;
+  position:relative;
+}
+
+/* expanding search */
+.sy-search{
+  display:flex;
+  align-items:center;
+  max-width:0;
+  overflow:hidden;
+  background:var(--sy-ink-soft);
+  border:1px solid #ff9800;
+  border-radius:24px;
+  transition:max-width .35s ease, margin .35s ease, padding .35s ease;
+}
+.sy-search.sy-open{
+  max-width:280px;
+  margin-right:.35rem;
+  padding:0 .3rem 0 .9rem;
+}
+.sy-search input{
+  background:transparent;
+  border:none;
+  outline:none;
+  color:var(--sy-bone);
+  font-family:'Poppins',sans-serif;
+  font-size:.82rem;
+  padding:.55rem 0;
+  width:220px;
+}
+.sy-search input::placeholder{ color:rgba(247,243,236,.4); }
+.sy-search button{
+  width:30px;
+  height:30px;
+  border-radius:50%;
+  border:none;
+  background:var(--sy-gold);
+  color:var(--sy-ink);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  flex:0 0 auto;
+}
+
+/* account dropdown */
+.sy-account{ position:relative; }
+.sy-account-menu{
+  position:absolute;
+  top:calc(100% + 12px);
+  right:0;
+  background:var(--sy-bone);
+  border-radius:10px;
+  min-width:180px;
+  box-shadow:0 20px 40px -12px rgba(0,0,0,.45);
+  padding:.4rem;
+  opacity:0;
+  visibility:hidden;
+  transform:translateY(6px);
+  transition:.22s ease;
+}
+.sy-account-menu.sy-open{
+  opacity:1;
+  visibility:visible;
+  transform:translateY(0);
+}
+.sy-account-menu a{
+  display:block;
+  padding:.65rem .8rem;
+  border-radius:7px;
+  color:var(--sy-ink);
+  text-decoration:none;
+  font-size:.82rem;
+  font-weight:500;
+  letter-spacing:.02em;
+  transition:.2s ease;
+}
+.sy-account-menu a.sy-signup{
+  background: #ff9800;
+  color: var(--sy-bone);
+  margin-top:.15rem;
+  text-align:center;
+}
+
+/* bag */
+.sy-cart{ position:relative; }
+.sy-cart-count{
+  position:absolute;
+  top:-4px;
+  right:-4px;
+  background:var(--sy-wine);
+  color:var(--sy-bone);
+  font-size:.62rem;
+  font-weight:600;
+  min-width:17px;
+  height:17px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border:2px solid var(--sy-ink);
+}
+.sy-cart-count.sy-hide{ display:none; }
+
+/* ============================================================
+   TOGGLER (mobile)
+   ============================================================ */
+.sy-toggler{ background:transparent; }
+.sy-burger{ display:flex; flex-direction:column; gap:5px; width:22px; }
+.sy-burger i{
+  display:block;
+  height:2px;
+  background:var(--sy-bone);
+  border-radius:2px;
+}
+
+/* ============================================================
+   FOCUS STATES (accessibility)
+   ============================================================ */
+.sy-icon-btn:focus-visible,
+.sy-links .nav-link:focus-visible,
+.sy-account-menu a:focus-visible,
+.sy-toggler:focus-visible{
+  outline:2px solid var(--sy-gold);
+  outline-offset:2px;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 991.98px){
+  .sy-links{
+    padding:1rem 0;
+    gap:0;
+  }
+  .sy-links .nav-link{ padding:.7rem .3rem !important; }
+  .sy-indicator{ display:none; }
+  .sy-actions{
+    padding-top:.75rem;
+    border-top:1px solid var(--sy-line);
+    margin-top:.5rem;
+    justify-content:flex-start;
+  }
+  .sy-search.sy-open{ max-width:100%; }
+  .sy-search input{ width:100%; }
+}
+
+@media (prefers-reduced-motion: reduce){
+  .sy-nav, .sy-tag, .sy-indicator, .sy-search, .sy-account-menu{ transition:none !important; }
+}
+
+/* preview-only helper (remove on real site) */
+.sy-preview-hero{
+  max-width:900px;
+  margin:5rem auto;
+  padding:0 1.5rem;
+  text-align:center;
+  color:var(--sy-ink);
+}
+.sy-preview-hero h1{ font-family:'Playfair Display',serif; font-size:2.4rem; }
+.sy-preview-hero p{ color:#6b6660; }
+</style>
+</head>
+<body>
+
+<!-- header started -->
+
+<div class="sy-topbar">
+  <div class="sy-topbar-inner">
+    <span>Free shipping on orders over $75</span>
+    <span>&</span>
+    <span>New drop every Friday</span>
+  </div>
+</div>
+
+<nav class="navbar navbar-expand-lg sy-nav" id="nav">
+  <div class="container sy-nav-inner">
+    <a class="navbar-brand sy-brand" href="#">
+      <span class="sy-tag"><span class="sy-tag-hole"></span></span>
+      <span class="sy-brandtext">
+        <span class="sy-bname">Shop<span>sy</span></span>
+        <span class="sy-bsub">Fashion &amp; Clothes</span>
+      </span>
+    </a>
+
+    <button class="navbar-toggler sy-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navmenu" aria-label="Toggle navigation">
+      <span class="sy-burger"><i></i><i></i><i></i></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navmenu">
+      <ul class="navbar-nav mx-auto sy-links" id="syLinks">
+        <li class="nav-item"><a class="nav-link active" href="/">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="/about">About</a></li>
+        <li class="nav-item"><a class="nav-link" href="/services">Services</a></li>
+        <li class="nav-item"><a class="nav-link" href="/products">Products</a></li>
+        <li class="nav-item"><a class="nav-link" href="/gallery">Gallery</a></li>
+        <li class="nav-item"><a class="nav-link" href="/reviews">Reviews</a></li>
+        <li class="nav-item"><a class="nav-link" href="/contact">Contact</a></li>
+        <li class="sy-indicator" id="syIndicator" aria-hidden="true"></li>
+      </ul>
+
+      <div class="d-flex align-items-center sy-actions">
+        <button class="sy-icon-btn" id="sySearchToggle" aria-label="Search" aria-expanded="false">
+          <i class="fas fa-search"></i>
+        </button>
+
+        <div class="sy-search" id="sySearch">
+          <input type="text" placeholder="Search dresses, denim, accessories…" id="sySearchInput"/>
+          <button aria-label="Submit search"><i class="fas fa-arrow-right"></i></button>
+        </div>
+
+        <div class="sy-account" id="syAccount">
+          <button class="sy-icon-btn" id="syAccountToggle" aria-haspopup="true" aria-expanded="false">
+            <i class="far fa-user"></i>
+          </button>
+          <div class="sy-account-menu" id="syAccountMenu">
+            <a href="/login"><center>Log in</center></a>
+            <a href="/signup" class="sy-signup">Create account</a>
+          </div>
+        </div>
+
+        <a href="#cart" class="sy-icon-btn sy-cart" id="syCart" aria-label="Bag">
+          <i class="fas fa-shopping-bag"></i>
+          <span class="sy-cart-count sy-hide" id="syCartCount">0</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- header ended -->
+
+<!-- hero started -->
+
+<div class="banner">
+    <div>
+        <h1>About</h1>
+    </div>
+</div>
+
+<!-- hero ended -->
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+/* ============================================================
+   SHOPSY NAVBAR — behavior
+   ============================================================ */
+document.addEventListener('DOMContentLoaded', function () {
+
+  var nav        = document.getElementById('nav');
+  var linksWrap  = document.getElementById('syLinks');
+  var indicator  = document.getElementById('syIndicator');
+  var links      = linksWrap.querySelectorAll('.nav-link');
+
+  // ---- sliding indicator under hovered / active link ----
+  function moveIndicatorTo(el){
+    if (!el || window.innerWidth < 992) return;
+    var linkRect = el.getBoundingClientRect();
+    var wrapRect = linksWrap.getBoundingClientRect();
+    indicator.style.left  = (linkRect.left - wrapRect.left) + 'px';
+    indicator.style.width = linkRect.width + 'px';
+  }
+
+  var activeLink = linksWrap.querySelector('.nav-link.active');
+
+  links.forEach(function (link) {
+    link.addEventListener('mouseenter', function () { moveIndicatorTo(link); });
+    link.addEventListener('focus', function () { moveIndicatorTo(link); });
+    link.addEventListener('click', function () {
+      links.forEach(function (l) { l.classList.remove('active'); });
+      link.classList.add('active');
+      activeLink = link;
+    });
+  });
+
+  linksWrap.addEventListener('mouseleave', function () { moveIndicatorTo(activeLink); });
+  window.addEventListener('resize', function () { moveIndicatorTo(activeLink); });
+  moveIndicatorTo(activeLink);
+
+  // ---- shrink navbar on scroll ----
+  function onScroll(){
+    if (window.scrollY > 40) nav.classList.add('sy-scrolled');
+    else nav.classList.remove('sy-scrolled');
+  }
+  window.addEventListener('scroll', onScroll);
+  onScroll();
+
+  // ---- expanding search ----
+  var searchToggle = document.getElementById('sySearchToggle');
+  var search        = document.getElementById('sySearch');
+  var searchInput   = document.getElementById('sySearchInput');
+
+  searchToggle.addEventListener('click', function () {
+    var isOpen = search.classList.toggle('sy-open');
+    searchToggle.setAttribute('aria-expanded', isOpen);
+    if (isOpen) searchInput.focus();
+  });
+
+  // ---- account dropdown ----
+  var accountToggle = document.getElementById('syAccountToggle');
+  var accountMenu    = document.getElementById('syAccountMenu');
+
+  accountToggle.addEventListener('click', function (e) {
+    e.stopPropagation();
+    var isOpen = accountMenu.classList.toggle('sy-open');
+    accountToggle.setAttribute('aria-expanded', isOpen);
+  });
+
+  document.addEventListener('click', function (e) {
+    if (!accountMenu.contains(e.target) && e.target !== accountToggle) {
+      accountMenu.classList.remove('sy-open');
+      accountToggle.setAttribute('aria-expanded', false);
+    }
+    if (!search.contains(e.target) && e.target !== searchToggle) {
+      search.classList.remove('sy-open');
+      searchToggle.setAttribute('aria-expanded', false);
+    }
+  });
+
+  // ---- cart badge (wire this to your real cart state) ----
+  var cartCount = document.getElementById('syCartCount');
+  function setCartCount(n){
+    cartCount.textContent = n;
+    cartCount.classList.toggle('sy-hide', n === 0);
+  }
+  setCartCount(0); // example: setCartCount(3) once items are added
+
+});
+</script>
+</body>
+</html>
